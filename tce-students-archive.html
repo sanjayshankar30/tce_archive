@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCE Students Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0f1a;
+  --surface:#0f1824;
+  --card:#141f2e;
+  --card-hover:#192538;
+  --accent:#3b82f6;
+  --accent-dim:#1d4ed8;
+  --gold:#f59e0b;
+  --green:#10b981;
+  --red:#ef4444;
+  --purple:#8b5cf6;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --border:#1e3a5f;
+  --border-soft:#1a2a40;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,15,26,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border-soft);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);letter-spacing:1px;font-weight:500}
+.nav-logo span{color:var(--muted)}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-tag{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+.dept-badge{background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:var(--accent);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500;letter-spacing:.5px}
+
+/* ── HERO ── */
+.hero{padding:120px 32px 60px;max-width:1100px;margin:0 auto}
+.hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.hero-eyebrow::before{content:'';display:block;width:24px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(36px,6vw,64px);font-weight:700;line-height:1.1;letter-spacing:-1.5px;margin-bottom:16px}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--muted);max-width:520px;line-height:1.7;margin-bottom:40px;font-weight:400}
+.hero-stats{display:flex;gap:32px;padding-top:8px;border-top:1px solid var(--border-soft)}
+.stat{display:flex;flex-direction:column;gap:3px}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:500;color:var(--text)}
+.stat-lbl{font-size:11px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ── SEARCH ── */
+.search-wrap{max-width:1100px;margin:0 auto;padding:0 32px 48px}
+.search-box{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 18px;transition:border-color .2s}
+.search-box:focus-within{border-color:var(--accent)}
+.search-box input{flex:1;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'Space Grotesk',sans-serif;outline:none}
+.search-box input::placeholder{color:var(--muted)}
+.search-icon{color:var(--muted);font-size:16px}
+
+/* ── MAIN LAYOUT ── */
+.layout{max-width:1100px;margin:0 auto;padding:0 32px 80px;display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}
+
+/* ── SIDEBAR ── */
+.sidebar{position:sticky;top:72px}
+.sidebar-label{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:12px;padding:0 4px}
+.sem-nav{list-style:none;display:flex;flex-direction:column;gap:2px}
+.sem-nav li a{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;font-size:13px;color:var(--muted);text-decoration:none;transition:all .15s;font-weight:500;border:1px solid transparent}
+.sem-nav li a:hover,.sem-nav li a.active{background:var(--card);color:var(--text);border-color:var(--border-soft)}
+.sem-nav li a .sem-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);min-width:16px}
+
+/* ── CONTENT AREA ── */
+.content{display:flex;flex-direction:column;gap:32px}
+
+/* ── SEMESTER SECTION ── */
+.sem-section{border-radius:12px;border:1px solid var(--border-soft);overflow:hidden}
+.sem-header{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:var(--surface);transition:background .15s;user-select:none}
+.sem-header:hover{background:var(--card)}
+.sem-header-left{display:flex;align-items:center;gap:16px}
+.sem-number{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;font-weight:500;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);padding:3px 8px;border-radius:4px}
+.sem-title{font-size:16px;font-weight:600;letter-spacing:-.3px}
+.sem-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.sem-header-right{display:flex;align-items:center;gap:12px}
+.subject-count{font-size:12px;color:var(--muted)}
+.chevron{color:var(--muted);font-size:18px;transition:transform .2s}
+.sem-header.open .chevron{transform:rotate(180deg)}
+
+/* ── SUBJECT LIST ── */
+.subject-list{display:none;padding:0 16px 16px;background:var(--bg);flex-direction:column;gap:6px}
+.subject-list.open{display:flex}
+
+/* ── SUBJECT CARD ── */
+.subject-card{background:var(--card);border:1px solid var(--border-soft);border-radius:8px;overflow:hidden;transition:border-color .15s}
+.subject-card:hover{border-color:var(--border)}
+.subject-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.subject-header:hover .subject-name{color:var(--accent)}
+.subject-left{display:flex;align-items:center;gap:12px}
+.subject-code{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);background:var(--surface);padding:2px 6px;border-radius:3px;letter-spacing:.5px;min-width:72px;text-align:center}
+.subject-name{font-size:13px;font-weight:500;transition:color .15s}
+.subject-type{font-size:10px;padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.5px}
+.type-pcc{background:rgba(16,185,129,0.12);color:var(--green);border:1px solid rgba(16,185,129,0.2)}
+.type-bsc{background:rgba(139,92,246,0.12);color:var(--purple);border:1px solid rgba(139,92,246,0.2)}
+.type-esc{background:rgba(245,158,11,0.12);color:var(--gold);border:1px solid rgba(245,158,11,0.2)}
+.type-hsmc{background:rgba(239,68,68,0.12);color:var(--red);border:1px solid rgba(239,68,68,0.2)}
+.type-lab{background:rgba(59,130,246,0.12);color:var(--accent);border:1px solid rgba(59,130,246,0.2)}
+.type-pw{background:rgba(100,116,139,0.12);color:var(--muted);border:1px solid rgba(100,116,139,0.2)}
+.subject-arrow{color:var(--muted);font-size:16px;transition:transform .2s}
+.subject-card.open .subject-arrow{transform:rotate(90deg)}
+
+/* ── MATERIAL PANEL ── */
+.material-panel{display:none;padding:0 16px 14px;border-top:1px solid var(--border-soft)}
+.material-panel.open{display:block}
+.material-tabs{display:flex;gap:6px;margin-bottom:12px;padding-top:12px}
+.mat-tab{padding:5px 14px;border-radius:5px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border-soft);color:var(--muted);background:transparent;font-family:'Space Grotesk',sans-serif;transition:all .15s;letter-spacing:.3px}
+.mat-tab:hover{border-color:var(--border);color:var(--text)}
+.mat-tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.mat-content{min-height:80px}
+.upload-zone{border:1px dashed var(--border);border-radius:6px;padding:28px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+.upload-zone strong{display:block;font-size:14px;color:var(--text);margin-bottom:4px;font-weight:500}
+.upload-btn{display:inline-block;margin-top:12px;padding:7px 18px;background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.3);color:var(--accent);border-radius:5px;font-size:12px;cursor:pointer;transition:all .15s;font-family:'Space Grotesk',sans-serif;font-weight:500}
+.upload-btn:hover{background:rgba(59,130,246,0.2)}
+.file-list{display:flex;flex-direction:column;gap:6px}
+.file-item{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--surface);border-radius:5px;border:1px solid var(--border-soft);font-size:12px;transition:border-color .15s}
+.file-item:hover{border-color:var(--border)}
+.file-icon{font-size:16px}
+.file-name{flex:1;font-weight:500;color:var(--text)}
+.file-size{color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace}
+.file-dl{padding:4px 10px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);color:var(--accent);border-radius:4px;font-size:11px;cursor:pointer;font-family:'Space Grotesk',sans-serif;font-weight:500;text-decoration:none;transition:all .15s}
+.file-dl:hover{background:rgba(59,130,246,0.2)}
+.coming-soon{text-align:center;padding:28px;color:var(--muted);font-size:13px}
+.coming-soon span{display:block;font-size:22px;margin-bottom:8px}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border-soft);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;max-width:1100px;margin:0 auto}
+footer p{font-size:12px;color:var(--muted)}
+footer a{color:var(--accent);text-decoration:none;font-size:12px}
+
+/* ── BOTTOM NAV (mobile) ── */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(10,15,26,0.97);backdrop-filter:blur(12px);border-top:1px solid var(--border-soft);padding:8px 6px 10px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+.bottom-nav::-webkit-scrollbar{display:none}
+.bottom-nav a{display:inline-flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border-radius:6px;font-size:10px;color:var(--muted);text-decoration:none;transition:all .15s;font-weight:500;letter-spacing:.5px;min-width:56px}
+.bottom-nav a:hover,.bottom-nav a.active{background:var(--card);color:var(--accent)}
+.bottom-nav a .bn-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;color:var(--accent);line-height:1}
+.bottom-nav a .bn-lbl{font-size:9px;color:var(--muted);letter-spacing:.5px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  /* Nav */
+  nav{padding:0 16px;height:52px}
+  .nav-tag{display:none}
+  .dept-badge{font-size:10px;padding:2px 8px}
+
+  /* Hero */
+  .hero{padding:80px 16px 36px}
+  .hero h1{font-size:clamp(30px,8vw,48px);letter-spacing:-1px}
+  .hero-sub{font-size:14px;margin-bottom:28px}
+  .hero-stats{flex-wrap:wrap;gap:16px}
+  .stat-num{font-size:18px}
+
+  /* Search */
+  .search-wrap{padding:0 16px 32px}
+
+  /* Layout */
+  .layout{grid-template-columns:1fr;padding:0 16px 100px}
+  .sidebar{display:none}
+
+  /* Bottom nav visible */
+  .bottom-nav{display:block}
+
+  /* Semester header */
+  .sem-header{padding:14px 16px}
+  .sem-header-left{gap:10px}
+  .sem-number{font-size:9px;padding:2px 6px}
+  .sem-title{font-size:14px}
+  .sem-meta{font-size:11px}
+  .subject-count{display:none}
+
+  /* Subject card */
+  .subject-header{padding:12px 12px;min-height:44px;flex-wrap:nowrap;gap:6px}
+  .subject-left{gap:8px;min-width:0;flex:1}
+  .subject-code{font-size:9px;min-width:60px;padding:2px 4px}
+  .subject-name{font-size:12px;line-height:1.3;white-space:normal;word-break:break-word}
+  .subject-type{display:none}
+  .subject-arrow{flex-shrink:0;font-size:18px;padding:4px}
+
+  /* Material tabs */
+  .material-tabs{flex-wrap:wrap;gap:6px}
+  .mat-tab{flex:1 1 calc(50% - 4px);text-align:center;padding:8px 6px;font-size:11px;min-height:36px}
+
+  /* Upload zone */
+  .upload-zone{padding:20px 14px;font-size:12px}
+  .upload-zone strong{font-size:13px}
+
+  /* Material panel */
+  .material-panel{padding:0 10px 12px}
+
+  /* Subject list */
+  .subject-list{padding:0 10px 12px;gap:5px}
+
+  /* Footer */
+  footer{flex-direction:column;gap:10px;text-align:center;padding:20px 16px 80px}
+}
+
+@media(max-width:400px){
+  .hero h1{font-size:28px}
+  .mat-tab{flex:1 1 100%}
+  .bottom-nav a{min-width:48px;padding:6px 8px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">TCE<span>/</span>ARCHIVE</div>
+  <div class="nav-right">
+    <span class="nav-tag">B.E. EEE · 2022–23</span>
+    <span class="dept-badge">Electrical & Electronics</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Thiagarajar College of Engineering</div>
+  <h1>TCE Students<br><em>Archive</em></h1>
+  <p class="hero-sub">Your one-stop resource hub for EEE study materials — notes, PDFs, PPTs, and previous year questions, organised by semester and subject.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">8</span><span class="stat-lbl">Semesters</span></div>
+    <div class="stat"><span class="stat-num">40+</span><span class="stat-lbl">Subjects</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-lbl">Resource types</span></div>
+    <div class="stat"><span class="stat-num">2022</span><span class="stat-lbl">Regulation</span></div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search subject name or code... (e.g. Control Systems, 22EE440)" oninput="filterSubjects(this.value)">
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Jump to semester</div>
+    <ul class="sem-nav" id="semNav">
+      <li><a href="#sem1"><span class="sem-num">01</span> First Semester</a></li>
+      <li><a href="#sem2"><span class="sem-num">02</span> Second Semester</a></li>
+      <li><a href="#sem3"><span class="sem-num">03</span> Third Semester</a></li>
+      <li><a href="#sem4"><span class="sem-num">04</span> Fourth Semester</a></li>
+      <li><a href="#sem5"><span class="sem-num">05</span> Fifth Semester</a></li>
+      <li><a href="#sem6"><span class="sem-num">06</span> Sixth Semester</a></li>
+      <li><a href="#sem7"><span class="sem-num">07</span> Seventh Semester</a></li>
+      <li><a href="#sem8"><span class="sem-num">08</span> Eighth Semester</a></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content" id="mainContent">
+  </main>
+</div>
+
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav" id="bottomNav">
+  <a href="#sem1"><span class="bn-num">1</span><span class="bn-lbl">First</span></a>
+  <a href="#sem2"><span class="bn-num">2</span><span class="bn-lbl">Second</span></a>
+  <a href="#sem3"><span class="bn-num">3</span><span class="bn-lbl">Third</span></a>
+  <a href="#sem4"><span class="bn-num">4</span><span class="bn-lbl">Fourth</span></a>
+  <a href="#sem5"><span class="bn-num">5</span><span class="bn-lbl">Fifth</span></a>
+  <a href="#sem6"><span class="bn-num">6</span><span class="bn-lbl">Sixth</span></a>
+  <a href="#sem7"><span class="bn-num">7</span><span class="bn-lbl">Seventh</span></a>
+  <a href="#sem8"><span class="bn-num">8</span><span class="bn-lbl">Eighth</span></a>
+</nav>
+
+<script>
+const SEMESTERS = [
+  {
+    id:'sem1', num:'01', title:'First Semester', credits:21,
+    subjects:[
+      {code:'22MA110',name:'Calculus for Engineers',type:'BSC'},
+      {code:'22PH120',name:'Physics',type:'BSC'},
+      {code:'22CH130',name:'Chemistry',type:'BSC'},
+      {code:'22EG140',name:'Technical English',type:'HSMC'},
+      {code:'22EE150',name:'Engineering Exploration',type:'ESC'},
+      {code:'22ME160',name:'Engineering Graphics',type:'ESC'},
+      {code:'22EG170',name:'English Laboratory',type:'LAB'},
+      {code:'22PH180',name:'Physics Laboratory',type:'LAB'},
+      {code:'22CH190',name:'Chemistry Laboratory',type:'LAB'},
+    ]
+  },
+  {
+    id:'sem2', num:'02', title:'Second Semester', credits:21,
+    subjects:[
+      {code:'22EE210',name:'Matrices and Transforms',type:'BSC'},
+      {code:'22EE220',name:'Materials Science for Electrical Engineering',type:'ESC'},
+      {code:'22EE230',name:'Electric Circuit Analysis',type:'PCC'},
+      {code:'22EE240',name:'Electromagnetic Fields',type:'PCC'},
+      {code:'22EE250',name:'Digital Systems',type:'PCC'},
+      {code:'22EE260',name:'Electronic Devices and Circuits',type:'PCC'},
+      {code:'22EE270',name:'Electrical Workshop',type:'LAB'},
+      {code:'22EE280',name:'Electronic Devices and Circuits Lab',type:'LAB'},
+    ]
+  },
+  {
+    id:'sem3', num:'03', title:'Third Semester', credits:21,
+    subjects:[
+      {code:'22EE310',name:'Numerical Methods and Complex Variables',type:'BSC'},
+      {code:'22EE320',name:'DC Machines and Transformers',type:'PCC'},
+      {code:'22EE330',name:'Linear Integrated Circuits',type:'PCC'},
+      {code:'22EE340',name:'Signals and Systems',type:'PCC'},
+      {code:'22EE350',name:'Problem Solving using Computers',type:'ESC'},
+      {code:'22ES390',name:'Design Thinking',type:'ESC'},
+      {code:'22EE370',name:'DC Machines and Transformers Lab',type:'LAB'},
+      {code:'22EE380',name:'Integrated Circuits Lab',type:'LAB'},
+    ]
+  },
+  {
+    id:'sem4', num:'04', title:'Fourth Semester', credits:24,
+    subjects:[
+      {code:'22EE410',name:'Probability Distribution and Random Process',type:'BSC'},
+      {code:'22EE420',name:'AC Machines',type:'PCC'},
+      {code:'22EE430',name:'Measurements and Instrumentation',type:'PCC'},
+      {code:'22EE440',name:'Control Systems',type:'PCC'},
+      {code:'22EE450',name:'Power Electronics',type:'PCC'},
+      {code:'22EE490',name:'Project Management',type:'HSMC'},
+      {code:'22EE460',name:'Data Structures',type:'ESC'},
+      {code:'22EE470',name:'Electrical Problem Solving using Computers Lab',type:'LAB'},
+      {code:'22EE480',name:'AC Machines Lab',type:'LAB'},
+    ]
+  },
+  {
+    id:'sem5', num:'05', title:'Fifth Semester', credits:23,
+    subjects:[
+      {code:'22EE510',name:'Generation, Transmission and Distribution',type:'PCC'},
+      {code:'22EE520',name:'Micro Controllers',type:'PCC'},
+      {code:'22EE530',name:'Electric Drives',type:'PCC'},
+      {code:'22EE540',name:'Power System Analysis',type:'PCC'},
+      {code:'22EE550',name:'Object Oriented Programming',type:'ESC'},
+      {code:'22EE570',name:'Measurement and Control Lab',type:'LAB'},
+      {code:'22EE580',name:'Microcontrollers Lab',type:'LAB'},
+      {code:'22EE590',name:'Project – I',type:'PW'},
+    ]
+  },
+  {
+    id:'sem6', num:'06', title:'Sixth Semester', credits:22,
+    subjects:[
+      {code:'22EE610',name:'Accounting and Finance',type:'HSMC'},
+      {code:'22EEPXX',name:'Programme Elective – 1',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 2',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 3',type:'PCC'},
+      {code:'22EG660',name:'Professional Communication',type:'HSMC'},
+      {code:'22EE670',name:'Power Electronics and Drives Lab',type:'LAB'},
+      {code:'22EE680',name:'Electric Power Systems Lab',type:'LAB'},
+      {code:'22EE690',name:'Project – II',type:'PW'},
+    ]
+  },
+  {
+    id:'sem7', num:'07', title:'Seventh Semester', credits:19,
+    subjects:[
+      {code:'22EEPXX',name:'Programme Elective – 4',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 5',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 6',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 7',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 8',type:'PCC'},
+      {code:'22EE770',name:'Energy Management System Lab',type:'LAB'},
+      {code:'22EE790',name:'Project – III',type:'PW'},
+    ]
+  },
+  {
+    id:'sem8', num:'08', title:'Eighth Semester', credits:9,
+    subjects:[
+      {code:'22EEPXX',name:'Programme Elective – 9',type:'PCC'},
+      {code:'22EEPXX',name:'Programme Elective – 10',type:'PCC'},
+      {code:'22EE890',name:'Project – IV',type:'PW'},
+    ]
+  }
+];
+
+const TYPE_MAP = {
+  PCC:{label:'Core',cls:'type-pcc'},
+  BSC:{label:'Science',cls:'type-bsc'},
+  ESC:{label:'Engg Sci',cls:'type-esc'},
+  HSMC:{label:'Humanities',cls:'type-hsmc'},
+  LAB:{label:'Lab',cls:'type-lab'},
+  PW:{label:'Project',cls:'type-pw'},
+};
+
+const TABS = ['Notes','PDF','PPT','PYQ'];
+
+function buildMaterialPanel(subjectCode, subjectName){
+  return `<div class="material-panel" id="mat-${subjectCode.replace(/[^a-z0-9]/gi,'')}${Math.random().toString(36).slice(2,6)}">
+    <div class="material-tabs">
+      ${TABS.map((t,i)=>`<button class="mat-tab${i===0?' active':''}" onclick="switchTab(this,'${t}')">${t}</button>`).join('')}
+    </div>
+    <div class="mat-content">
+      <div class="upload-zone">
+        <strong>No files uploaded yet</strong>
+        Materials for ${subjectName} will appear here once uploaded.
+        <br><button class="upload-btn" onclick="alert('Upload feature coming soon!')">+ Upload file</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function switchTab(btn, tab){
+  const panel = btn.closest('.material-panel');
+  panel.querySelectorAll('.mat-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const content = panel.querySelector('.mat-content');
+  content.innerHTML = `<div class="upload-zone"><strong>No ${tab} files yet</strong>Be the first to contribute ${tab} materials!<br><button class="upload-btn" onclick="alert('Upload coming soon!')">+ Upload ${tab}</button></div>`;
+}
+
+function buildSemester(sem){
+  const subjects = sem.subjects.map((s,i)=>{
+    const t = TYPE_MAP[s.type]||TYPE_MAP.ESC;
+    const uid = `${s.code}-${i}`;
+    return `<div class="subject-card" id="card-${uid}">
+      <div class="subject-header" onclick="toggleSubject('${uid}')">
+        <div class="subject-left">
+          <span class="subject-code">${s.code}</span>
+          <span class="subject-name">${s.name}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="subject-type ${t.cls}">${t.label}</span>
+          <span class="subject-arrow">›</span>
+        </div>
+      </div>
+      ${buildMaterialPanel(uid, s.name)}
+    </div>`;
+  }).join('');
+
+  return `<section class="sem-section" id="${sem.id}">
+    <div class="sem-header" onclick="toggleSem(this)">
+      <div class="sem-header-left">
+        <span class="sem-number">SEM ${sem.num}</span>
+        <div>
+          <div class="sem-title">${sem.title}</div>
+          <div class="sem-meta">${sem.subjects.length} subjects · ${sem.credits} credits</div>
+        </div>
+      </div>
+      <div class="sem-header-right">
+        <span class="subject-count">${sem.subjects.length} subjects</span>
+        <span class="chevron">⌄</span>
+      </div>
+    </div>
+    <div class="subject-list">
+      ${subjects}
+    </div>
+  </section>`;
+}
+
+function toggleSem(header){
+  header.classList.toggle('open');
+  const list = header.nextElementSibling;
+  list.classList.toggle('open');
+}
+
+function toggleSubject(uid){
+  const card = document.getElementById('card-'+uid);
+  card.classList.toggle('open');
+  const panel = card.querySelector('.material-panel');
+  panel.classList.toggle('open');
+}
+
+function filterSubjects(query){
+  const q = query.toLowerCase().trim();
+  document.querySelectorAll('.subject-card').forEach(card=>{
+    const name = card.querySelector('.subject-name').textContent.toLowerCase();
+    const code = card.querySelector('.subject-code').textContent.toLowerCase();
+    const match = !q || name.includes(q) || code.includes(q);
+    card.style.display = match ? '' : 'none';
+    if(match && q){
+      const section = card.closest('.sem-section');
+      section.querySelector('.sem-header').classList.add('open');
+      section.querySelector('.subject-list').classList.add('open');
+    }
+  });
+}
+
+// Render
+const main = document.getElementById('mainContent');
+main.innerHTML = SEMESTERS.map(buildSemester).join('');
+
+// Active sidebar + bottom nav link on scroll
+const sections = document.querySelectorAll('.sem-section');
+const navLinks = document.querySelectorAll('.sem-nav a, .bottom-nav a');
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      navLinks.forEach(a=>{
+        const match = a.getAttribute('href')==='#'+e.target.id;
+        a.classList.toggle('active', match);
+      });
+      // auto-scroll active bottom nav item into view
+      const activeBtn = document.querySelector('.bottom-nav a.active');
+      if(activeBtn) activeBtn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
+    }
+  });
+},{threshold:0.25,rootMargin:'-56px 0px 0px 0px'});
+sections.forEach(s=>observer.observe(s));
+</script>
+
+</body>
+</html>
