@@ -273,107 +273,18 @@ footer a{color:var(--accent);text-decoration:none;font-size:12px}
 </nav>
 
 <script>
+// --- GITHUB CONFIGURATION ---
+const GITHUB_USERNAME = 'YOUR_GITHUB_USERNAME'; // e.g., sanjay-shankar
+const REPO_NAME = 'YOUR_REPO_NAME';             // e.g., tce-eee-archive
+const BRANCH = 'main';
+
+// The URL where your site will look for the file index
+const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/materials.json`;
+
+let materialsData = {}; // Will hold the fetched JSON data
+
 const SEMESTERS = [
-  {
-    id:'sem1', num:'01', title:'First Semester', credits:21,
-    subjects:[
-      {code:'22MA110',name:'Calculus for Engineers',type:'BSC'},
-      {code:'22PH120',name:'Physics',type:'BSC'},
-      {code:'22CH130',name:'Chemistry',type:'BSC'},
-      {code:'22EG140',name:'Technical English',type:'HSMC'},
-      {code:'22EE150',name:'Engineering Exploration',type:'ESC'},
-      {code:'22ME160',name:'Engineering Graphics',type:'ESC'},
-      {code:'22EG170',name:'English Laboratory',type:'LAB'},
-      {code:'22PH180',name:'Physics Laboratory',type:'LAB'},
-      {code:'22CH190',name:'Chemistry Laboratory',type:'LAB'},
-    ]
-  },
-  {
-    id:'sem2', num:'02', title:'Second Semester', credits:21,
-    subjects:[
-      {code:'22EE210',name:'Matrices and Transforms',type:'BSC'},
-      {code:'22EE220',name:'Materials Science for Electrical Engineering',type:'ESC'},
-      {code:'22EE230',name:'Electric Circuit Analysis',type:'PCC'},
-      {code:'22EE240',name:'Electromagnetic Fields',type:'PCC'},
-      {code:'22EE250',name:'Digital Systems',type:'PCC'},
-      {code:'22EE260',name:'Electronic Devices and Circuits',type:'PCC'},
-      {code:'22EE270',name:'Electrical Workshop',type:'LAB'},
-      {code:'22EE280',name:'Electronic Devices and Circuits Lab',type:'LAB'},
-    ]
-  },
-  {
-    id:'sem3', num:'03', title:'Third Semester', credits:21,
-    subjects:[
-      {code:'22EE310',name:'Numerical Methods and Complex Variables',type:'BSC'},
-      {code:'22EE320',name:'DC Machines and Transformers',type:'PCC'},
-      {code:'22EE330',name:'Linear Integrated Circuits',type:'PCC'},
-      {code:'22EE340',name:'Signals and Systems',type:'PCC'},
-      {code:'22EE350',name:'Problem Solving using Computers',type:'ESC'},
-      {code:'22ES390',name:'Design Thinking',type:'ESC'},
-      {code:'22EE370',name:'DC Machines and Transformers Lab',type:'LAB'},
-      {code:'22EE380',name:'Integrated Circuits Lab',type:'LAB'},
-    ]
-  },
-  {
-    id:'sem4', num:'04', title:'Fourth Semester', credits:24,
-    subjects:[
-      {code:'22EE410',name:'Probability Distribution and Random Process',type:'BSC'},
-      {code:'22EE420',name:'AC Machines',type:'PCC'},
-      {code:'22EE430',name:'Measurements and Instrumentation',type:'PCC'},
-      {code:'22EE440',name:'Control Systems',type:'PCC'},
-      {code:'22EE450',name:'Power Electronics',type:'PCC'},
-      {code:'22EE490',name:'Project Management',type:'HSMC'},
-      {code:'22EE460',name:'Data Structures',type:'ESC'},
-      {code:'22EE470',name:'Electrical Problem Solving using Computers Lab',type:'LAB'},
-      {code:'22EE480',name:'AC Machines Lab',type:'LAB'},
-    ]
-  },
-  {
-    id:'sem5', num:'05', title:'Fifth Semester', credits:23,
-    subjects:[
-      {code:'22EE510',name:'Generation, Transmission and Distribution',type:'PCC'},
-      {code:'22EE520',name:'Micro Controllers',type:'PCC'},
-      {code:'22EE530',name:'Electric Drives',type:'PCC'},
-      {code:'22EE540',name:'Power System Analysis',type:'PCC'},
-      {code:'22EE550',name:'Object Oriented Programming',type:'ESC'},
-      {code:'22EE570',name:'Measurement and Control Lab',type:'LAB'},
-      {code:'22EE580',name:'Microcontrollers Lab',type:'LAB'},
-      {code:'22EE590',name:'Project – I',type:'PW'},
-    ]
-  },
-  {
-    id:'sem6', num:'06', title:'Sixth Semester', credits:22,
-    subjects:[
-      {code:'22EE610',name:'Accounting and Finance',type:'HSMC'},
-      {code:'22EEPXX',name:'Programme Elective – 1',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 2',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 3',type:'PCC'},
-      {code:'22EG660',name:'Professional Communication',type:'HSMC'},
-      {code:'22EE670',name:'Power Electronics and Drives Lab',type:'LAB'},
-      {code:'22EE680',name:'Electric Power Systems Lab',type:'LAB'},
-      {code:'22EE690',name:'Project – II',type:'PW'},
-    ]
-  },
-  {
-    id:'sem7', num:'07', title:'Seventh Semester', credits:19,
-    subjects:[
-      {code:'22EEPXX',name:'Programme Elective – 4',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 5',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 6',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 7',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 8',type:'PCC'},
-      {code:'22EE770',name:'Energy Management System Lab',type:'LAB'},
-      {code:'22EE790',name:'Project – III',type:'PW'},
-    ]
-  },
-  {
-    id:'sem8', num:'08', title:'Eighth Semester', credits:9,
-    subjects:[
-      {code:'22EEPXX',name:'Programme Elective – 9',type:'PCC'},
-      {code:'22EEPXX',name:'Programme Elective – 10',type:'PCC'},
-      {code:'22EE890',name:'Project – IV',type:'PW'},
-    ]
-  }
+  // ... (Keep your existing SEMESTERS array here exactly as it is) ...
 ];
 
 const TYPE_MAP = {
@@ -387,45 +298,81 @@ const TYPE_MAP = {
 
 const TABS = ['Notes','PDF','PPT','PYQ'];
 
+// Fetch data from GitHub on load
+async function init() {
+  try {
+    const res = await fetch(DATA_URL);
+    if(res.ok) materialsData = await res.json();
+  } catch(e) {
+    console.warn("Could not load materials.json. Using empty state.");
+  }
+  
+  const main = document.getElementById('mainContent');
+  main.innerHTML = SEMESTERS.map(buildSemester).join('');
+  
+  // Setup intersection observers for scroll tracking
+  setupScrollSpy();
+}
+
 function buildMaterialPanel(subjectCode, subjectName){
-  return `<div class="material-panel" id="mat-${subjectCode.replace(/[^a-z0-9]/gi,'')}${Math.random().toString(36).slice(2,6)}">
+  // Auto-load the first tab ('Notes')
+  return `<div class="material-panel" id="mat-${subjectCode}">
     <div class="material-tabs">
-      ${TABS.map((t,i)=>`<button class="mat-tab${i===0?' active':''}" onclick="switchTab(this,'${t}')">${t}</button>`).join('')}
+      ${TABS.map((t,i)=>`<button class="mat-tab${i===0?' active':''}" onclick="switchTab(this, '${t}', '${subjectCode}')">${t}</button>`).join('')}
     </div>
-    <div class="mat-content">
-      <div class="upload-zone">
-        <strong>No files uploaded yet</strong>
-        Materials for ${subjectName} will appear here once uploaded.
-        <br><button class="upload-btn" onclick="alert('Upload feature coming soon!')">+ Upload file</button>
+    <div class="mat-content" id="content-${subjectCode}">
       </div>
-    </div>
   </div>`;
 }
 
-function switchTab(btn, tab){
+function switchTab(btn, tab, subjectCode){
   const panel = btn.closest('.material-panel');
   panel.querySelectorAll('.mat-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const content = panel.querySelector('.mat-content');
-  content.innerHTML = `<div class="upload-zone"><strong>No ${tab} files yet</strong>Be the first to contribute ${tab} materials!<br><button class="upload-btn" onclick="alert('Upload coming soon!')">+ Upload ${tab}</button></div>`;
+  
+  const content = document.getElementById(`content-${subjectCode}`);
+  const files = materialsData[subjectCode]?.[tab] || [];
+  
+  // Direct link to the GitHub web uploader for this specific subject and tab
+  const uploadLink = `https://github.com/${GITHUB_USERNAME}/${REPO_NAME}/new/${BRANCH}/materials/${subjectCode}/${tab}`;
+
+  if(files.length > 0) {
+    content.innerHTML = `<div class="file-list">
+      ${files.map(f => `
+        <div class="file-item">
+          <span class="file-icon">${tab === 'PPT' ? '📊' : '📄'}</span>
+          <span class="file-name">${f.name}</span>
+          <a href="${f.url}" target="_blank" class="file-dl" download>Download</a>
+        </div>
+      `).join('')}
+      <div style="text-align:center; margin-top:10px;">
+         <a href="${uploadLink}" target="_blank" class="upload-btn" style="text-decoration:none">+ Add More ${tab}</a>
+      </div>
+    </div>`;
+  } else {
+    content.innerHTML = `<div class="upload-zone">
+      <strong>No ${tab} files yet</strong>
+      Be the first to contribute materials for this subject!<br>
+      <a href="${uploadLink}" target="_blank" class="upload-btn" style="text-decoration:none">+ Upload to GitHub</a>
+    </div>`;
+  }
 }
 
 function buildSemester(sem){
-  const subjects = sem.subjects.map((s,i)=>{
+  const subjects = sem.subjects.map((s)=>{
     const t = TYPE_MAP[s.type]||TYPE_MAP.ESC;
-    const uid = `${s.code}-${i}`;
-    return `<div class="subject-card" id="card-${uid}">
-      <div class="subject-header" onclick="toggleSubject('${uid}')">
+    return `<div class="subject-card" id="card-${s.code}">
+      <div class="subject-header" onclick="toggleSubject('${s.code}')">
         <div class="subject-left">
-          <span class="subject-code">${s.code}</span>
-          <span class="subject-name">${s.name}</span>
+          <span class="subject-code" data-orig="${s.code}">${s.code}</span>
+          <span class="subject-name" data-orig="${s.name}">${s.name}</span>
         </div>
         <div style="display:flex;align-items:center;gap:10px">
           <span class="subject-type ${t.cls}">${t.label}</span>
           <span class="subject-arrow">›</span>
         </div>
       </div>
-      ${buildMaterialPanel(uid, s.name)}
+      ${buildMaterialPanel(s.code, s.name)}
     </div>`;
   }).join('');
 
@@ -443,62 +390,75 @@ function buildSemester(sem){
         <span class="chevron">⌄</span>
       </div>
     </div>
-    <div class="subject-list">
-      ${subjects}
-    </div>
+    <div class="subject-list">${subjects}</div>
   </section>`;
 }
 
 function toggleSem(header){
   header.classList.toggle('open');
-  const list = header.nextElementSibling;
-  list.classList.toggle('open');
+  header.nextElementSibling.classList.toggle('open');
 }
 
-function toggleSubject(uid){
-  const card = document.getElementById('card-'+uid);
+function toggleSubject(code){
+  const card = document.getElementById('card-'+code);
+  const isOpen = card.classList.contains('open');
   card.classList.toggle('open');
-  const panel = card.querySelector('.material-panel');
-  panel.classList.toggle('open');
+  card.querySelector('.material-panel').classList.toggle('open');
+  
+  // If opening for the first time, click the active tab to render files
+  if(!isOpen) {
+     const activeTab = card.querySelector('.mat-tab.active');
+     if(activeTab) activeTab.click();
+  }
 }
 
 function filterSubjects(query){
   const q = query.toLowerCase().trim();
   document.querySelectorAll('.subject-card').forEach(card=>{
-    const name = card.querySelector('.subject-name').textContent.toLowerCase();
-    const code = card.querySelector('.subject-code').textContent.toLowerCase();
+    const nameEl = card.querySelector('.subject-name');
+    const codeEl = card.querySelector('.subject-code');
+    const name = nameEl.getAttribute('data-orig').toLowerCase();
+    const code = codeEl.getAttribute('data-orig').toLowerCase();
+    
     const match = !q || name.includes(q) || code.includes(q);
     card.style.display = match ? '' : 'none';
+    
     if(match && q){
+      // Highlight matching text
+      const regex = new RegExp(`(${q})`, 'gi');
+      nameEl.innerHTML = nameEl.getAttribute('data-orig').replace(regex, '<mark style="background:var(--accent);color:#fff;padding:0 2px;border-radius:2px">$1</mark>');
+      codeEl.innerHTML = codeEl.getAttribute('data-orig').replace(regex, '<mark style="background:var(--accent);color:#fff;padding:0 2px;border-radius:2px">$1</mark>');
+      
       const section = card.closest('.sem-section');
       section.querySelector('.sem-header').classList.add('open');
       section.querySelector('.subject-list').classList.add('open');
+    } else {
+      nameEl.textContent = nameEl.getAttribute('data-orig');
+      codeEl.textContent = codeEl.getAttribute('data-orig');
     }
   });
 }
 
-// Render
-const main = document.getElementById('mainContent');
-main.innerHTML = SEMESTERS.map(buildSemester).join('');
+function setupScrollSpy() {
+  const sections = document.querySelectorAll('.sem-section');
+  const navLinks = document.querySelectorAll('.sem-nav a, .bottom-nav a');
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(a=>{
+          const match = a.getAttribute('href')==='#'+e.target.id;
+          a.classList.toggle('active', match);
+        });
+        const activeBtn = document.querySelector('.bottom-nav a.active');
+        if(activeBtn) activeBtn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
+      }
+    });
+  },{threshold:0.25,rootMargin:'-56px 0px 0px 0px'});
+  sections.forEach(s=>observer.observe(s));
+}
 
-// Active sidebar + bottom nav link on scroll
-const sections = document.querySelectorAll('.sem-section');
-const navLinks = document.querySelectorAll('.sem-nav a, .bottom-nav a');
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      navLinks.forEach(a=>{
-        const match = a.getAttribute('href')==='#'+e.target.id;
-        a.classList.toggle('active', match);
-      });
-      // auto-scroll active bottom nav item into view
-      const activeBtn = document.querySelector('.bottom-nav a.active');
-      if(activeBtn) activeBtn.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
-    }
-  });
-},{threshold:0.25,rootMargin:'-56px 0px 0px 0px'});
-sections.forEach(s=>observer.observe(s));
+// Boot the app
+init();
 </script>
-
 </body>
 </html>
